@@ -1,23 +1,24 @@
 // ==UserScript==
 // @name         Facebook++
 // @namespace    maxhyt.fbpp
-// @version      1.0
-// @description  try to take over the world!
+// @version      2.0
+// @description  download vid & block ads
 // @author       Maxhyt
 // @match        https://www.facebook.com/*
-// @require      https://code.jquery.com/jquery-3.3.1.min.js
+// @require      https://code.jquery.com/jquery-3.5.1.min.js
 // ==/UserScript==
 
 (function() {
     'use strict';
-    var url = window.location.href;
-    var theScript;
-    var vidURL = "#";
+    var $ = jQuery;
+    let url = window.location.href;
+    let theScript;
+    let vidURL = "#";
 
     (function CheckLoop(foundScript) {
         setTimeout(function()
         {
-            var scriptTags = jQuery("script");
+            var scriptTags = $("script");
 
             for (var i = 0; i < scriptTags.length; i++)
             {
@@ -28,9 +29,11 @@
                     break;
                 }
             }
-            
+
             if (!foundScript)
+            {
                 CheckLoop(foundScript);
+            }
             else
             {
                 if (theScript.indexOf("hd_src\":null") != -1)
@@ -51,20 +54,45 @@
                 (function FindMenu(found)
                  {
                     setTimeout(function() {
-                        if (jQuery(".uiContextualLayer").length)
+                        if ($(".uiContextualLayer").length)
                         {
                             found = true;
 
-                            var DownloadButton = jQuery("<li class=\"_54ni __MenuItem\" role=\"presentation\"><a class=\"_54nc\" href=\"" + vidURL + "\" role=\"menuitem\"><span><span class=\"_54nh\">Download</span></span></a></li>");
-                            jQuery("._54nf").append(DownloadButton);
+                            var DownloadButton = $("<li class=\"_54ni __MenuItem\" role=\"presentation\"><a class=\"_54nc\" href=\"" + vidURL + "\" role=\"menuitem\"><span><span class=\"_54nh\">Download</span></span></a></li>");
+                            $("._54nf").append(DownloadButton);
                         }
 
                         if (!found)
+                        {
                             FindMenu(found);
+                        }
                     }, 200);
                 })(false);
             }
         }, 100);
     })(false);
-    
+
+    (function blockAds()
+    {
+        setTimeout(function() {
+            let storiesArray = $('div[id^="hyperfeed_story_id_"]');
+            for (let story of storiesArray)
+            {
+                let spanSponsoredArray = $(story).find(".t_18c362n6vw .m_18c362n6vr");
+                let textFound = "";
+
+                for (let spanSponsored of spanSponsoredArray)
+                {
+                    textFound += $(spanSponsored).html();
+                }
+
+                if (textFound.includes("Sponsored"))
+                {
+                    $(story).remove();
+                }
+            }
+
+            blockAds();
+        }, 1000);
+    })();
 })();
