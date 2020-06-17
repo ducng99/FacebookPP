@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Facebook++
 // @namespace    maxhyt.fbpp
-// @version      2.0
+// @version      2.1
 // @description  download vid & block ads
 // @author       Maxhyt
 // @match        https://www.facebook.com/*
@@ -76,9 +76,20 @@
     {
         setTimeout(function() {
             let storiesArray = $('div[id^="hyperfeed_story_id_"]');
+
+            if (storiesArray.length == 0)
+            {
+                storiesArray = $('div[data-pagelet^="FeedUnit_"]');
+            }
+
             for (let story of storiesArray)
             {
                 let spanSponsoredArray = $(story).find(".t_18c362n6vw .m_18c362n6vr");
+                if (spanSponsoredArray.length == 0)
+                {
+                    spanSponsoredArray = $(story).find("b[style!='display: none;']");
+                }
+
                 let textFound = "";
 
                 for (let spanSponsored of spanSponsoredArray)
