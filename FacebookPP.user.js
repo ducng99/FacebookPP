@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Facebook++
 // @namespace    maxhyt.fbpp
-// @version      2.1
+// @version      2.2
 // @description  download vid & block ads
 // @author       Maxhyt
 // @match        https://www.facebook.com/*
@@ -72,38 +72,34 @@
         }, 100);
     })(false);
 
-    (function blockAds()
-    {
-        setTimeout(function() {
-            let storiesArray = $('div[id^="hyperfeed_story_id_"]');
+    // Block ads
+    setInterval(function() {
+        let storiesArray = $('div[id^="hyperfeed_story_id_"]');
 
-            if (storiesArray.length == 0)
+        if (storiesArray.length == 0)
+        {
+            storiesArray = $('div[data-pagelet^="FeedUnit_"]');
+        }
+
+        for (let story of storiesArray)
+        {
+            let spanSponsoredArray = $(story).find(".t_18c362n6vw .m_18c362n6vr");
+            if (spanSponsoredArray.length == 0)
             {
-                storiesArray = $('div[data-pagelet^="FeedUnit_"]');
+                spanSponsoredArray = $(story).find("span[style!='position: absolute; top: 3em;'][class='b6zbclly myohyog2 l9j0dhe7 aenfhxwr l94mrbxd ihxqhq3m nc684nl6 t5a262vz sdhka5h4']");
             }
 
-            for (let story of storiesArray)
+            let textFound = "";
+
+            for (let spanSponsored of spanSponsoredArray)
             {
-                let spanSponsoredArray = $(story).find(".t_18c362n6vw .m_18c362n6vr");
-                if (spanSponsoredArray.length == 0)
-                {
-                    spanSponsoredArray = $(story).find("b[style!='display: none;']");
-                }
-
-                let textFound = "";
-
-                for (let spanSponsored of spanSponsoredArray)
-                {
-                    textFound += $(spanSponsored).html();
-                }
-
-                if (textFound.includes("Sponsored"))
-                {
-                    $(story).remove();
-                }
+                textFound += $(spanSponsored).html();
             }
 
-            blockAds();
-        }, 1000);
-    })();
+            if (textFound.includes("Sponsored"))
+            {
+                $(story).remove();
+            }
+        }
+    }, 1000);
 })();
