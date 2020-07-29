@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Facebook++
 // @namespace    maxhyt.fbpp
-// @version      2.2
+// @version      2.3
 // @description  download vid & block ads
 // @author       Maxhyt
 // @match        https://www.facebook.com/*
@@ -101,5 +101,5 @@
                 $(story).remove();
             }
         }
-    }, 1000);
+    }, 2000);
 })();
