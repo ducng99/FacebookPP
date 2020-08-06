@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Facebook++
 // @namespace    maxhyt.fbpp
-// @version      2.3
+// @version      2.4
 // @description  download vid & block ads
 // @author       Maxhyt
 // @match        https://www.facebook.com/*
@@ -86,19 +86,28 @@
             let spanSponsoredArray = $(story).find(".t_18c362n6vw .m_18c362n6vr");
             if (spanSponsoredArray.length == 0)
             {
-                spanSponsoredArray = $(story).find("span[style!='position: absolute; top: 3em;'][class='b6zbclly myohyog2 l9j0dhe7 aenfhxwr l94mrbxd ihxqhq3m nc684nl6 t5a262vz sdhka5h4']");
+                // New facebook
+                let sponsoredLabel = $(story).find("span[aria-label='Sponsored']");
+                
+                if (sponsoredLabel.length > 0 && sponsoredLabel.children().length > 0)
+                {
+                    $(story).remove();
+                }
             }
+            else
+            {   
+                // Old facebook
+                let textFound = "";
 
-            let textFound = "";
+                for (let spanSponsored of spanSponsoredArray)
+                {
+                    textFound += $(spanSponsored).html();
+                }
 
-            for (let spanSponsored of spanSponsoredArray)
-            {
-                textFound += $(spanSponsored).html();
-            }
-
-            if (textFound.includes("Sponsored"))
-            {
-                $(story).remove();
+                if (textFound.includes("Sponsored"))
+                {
+                    $(story).remove();
+                }
             }
         }
     }, 2000);
