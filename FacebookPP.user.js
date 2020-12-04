@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Facebook++
 // @namespace    maxhyt.fbpp
-// @version      2.5
+// @version      2.5.1
 // @description  download vid & block ads
 // @author       Maxhyt
 // @match        https://www.facebook.com/*
@@ -15,7 +15,7 @@
     let theScript;
     let vidURL = "#";
 
-    (function CheckLoop(foundScript) {
+    /*(function CheckLoop(foundScript) {
         setTimeout(function()
         {
             var scriptTags = $("script");
@@ -69,8 +69,8 @@
                     }, 200);
                 })(false);
             }
-        }, 100);
-    })(false);
+        }, 1000);
+    })(false);*/
 
     // Block ads
     setInterval(function() {
@@ -80,20 +80,16 @@
         {
             $(story).attr("data-pagelet", "fbpp_" + $(story).attr("data-pagelet"));
             
-            let spanSponsoredArray = $(story).find(".t_18c362n6vw .m_18c362n6vr");
-            if (spanSponsoredArray.length == 0)
-            {
-                let sponsoredLabel = $(story).find("span[aria-label='Sponsored']");
+            let sponsoredLabel = $(story).find("a[aria-label='Sponsored']");
                 
-                if (sponsoredLabel.length > 0 && sponsoredLabel.children().length > 0)
-                {
-                    $(story).remove();
-                }
+            if (sponsoredLabel.length > 0 && sponsoredLabel.children().length > 0)
+            {
+                $(story).remove();
             }
             else
-            {   
+            {
                 let specialSponsor = $(story).find("div.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.gmql0nx0.gpro0wi8.b1v8xokw");
-                
+
                 if (specialSponsor.length > 0)
                 {
                     $(story).remove();
