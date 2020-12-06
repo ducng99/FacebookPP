@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Facebook++
 // @namespace    maxhyt.fbpp
-// @version      2.5.1
+// @version      2.5.2
 // @description  download vid & block ads
 // @author       Maxhyt
 // @match        https://www.facebook.com/*
@@ -80,7 +80,7 @@
         {
             $(story).attr("data-pagelet", "fbpp_" + $(story).attr("data-pagelet"));
             
-            let sponsoredLabel = $(story).find("a[aria-label='Sponsored']");
+            let sponsoredLabel = $(story).find("[aria-label='Sponsored']");
                 
             if (sponsoredLabel.length > 0 && sponsoredLabel.children().length > 0)
             {
