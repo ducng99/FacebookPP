@@ -1,80 +1,54 @@
 // ==UserScript==
 // @name         Facebook++
 // @namespace    maxhyt.fbpp
-// @version      3.0.0
+// @version      3.1.0
 // @description  download vid & block ads
 // @author       Maxhyt
 // @match        https://www.facebook.com/*
+// @updateURL    https://ducng99.github.io/FacebookPP/FacebookPP.meta.js
+// @downloadURL  https://ducng99.github.io/FacebookPP/FacebookPP.user.js
 // ==/UserScript==
 
 (function() {
     'use strict';
-    /*let url = window.location.href;
-    let theScript;
-    let vidURL = "#";
-
-    (function CheckLoop(foundScript) {
-        setTimeout(function()
+    
+    // Download video
+    setTimeout(function() {
+        if (window.location.href.indexOf("watch") !== -1)
         {
-            var scriptTags = $("script");
+            new Promise(resolve => {
+                let scripts = document.querySelectorAll('script');
+                let foundScript = false;
+                let src = "javascript:alert('Link not found!')";
 
-            for (var i = 0; i < scriptTags.length; i++)
-            {
-                if (scriptTags[i].innerHTML.includes(".mp4"))
+                for (let i = 0; i < scripts.length && !foundScript; i++)
                 {
-                    foundScript = true;
-                    theScript = scriptTags[i].innerHTML;
-                    break;
-                }
-            }
+                    let HD_src_pos = scripts[i].innerText.indexOf('playable_url_quality_hd');
 
-            if (!foundScript)
-            {
-                CheckLoop(foundScript);
-            }
-            else
-            {
-                if (theScript.indexOf("hd_src\":null") != -1)
-                {
-                    vidURL = theScript.substring(theScript.indexOf("sd_src") + 9, theScript.indexOf("\",\"hd_tag"));
-                    vidURL = vidURL.replace(/\\\//g, "/");
-                }
-                else if (theScript.indexOf("hd_src\":\"") != -1)
-                {
-                    vidURL = theScript.substring(theScript.indexOf("hd_src") + 9, theScript.indexOf("\",\"sd_src"));
-                    vidURL = vidURL.replace(/\\\//g, "/");
-                }
-                else if (theScript.indexOf(",hd_src:") != -1)
-                {
-                    vidURL = theScript.substring(theScript.indexOf("hd_src") + 8, theScript.indexOf("\",sd_src:"));
+                    if (HD_src_pos !== -1)
+                    {
+                        foundScript = true;
+
+                        let src_end_pos = scripts[i].innerText.indexOf('","spherical', HD_src_pos + 1);
+                        src = scripts[i].innerText.substring(HD_src_pos + 'playable_url_quality_hd":"'.length, src_end_pos).replaceAll("\\", "");
+                    }
                 }
 
-                (function FindMenu(found)
-                 {
-                    setTimeout(function() {
-                        if ($(".uiContextualLayer").length)
-                        {
-                            found = true;
-
-                            var DownloadButton = $("<li class=\"_54ni __MenuItem\" role=\"presentation\"><a class=\"_54nc\" href=\"" + vidURL + "\" role=\"menuitem\"><span><span class=\"_54nh\">Download</span></span></a></li>");
-                            $("._54nf").append(DownloadButton);
-                        }
-
-                        if (!found)
-                        {
-                            FindMenu(found);
-                        }
-                    }, 200);
-                })(false);
-            }
-        }, 1000);
-    })(false);*/
+                let playerControls = document.body.querySelector('div.bp9cbjyn.i09qtzwb.jeutjz8y.j83agx80.btwxx1t3.pmk7jnqg.dpja2al7.pnx7fd3z.e4zzj2sf.k4urcfbm.tghn160j');
+                let downloadDiv = document.createElement('div');
+                downloadDiv.innerHTML = '<a class="q9uorilb qjjbsfad fv0vnmcu w0hvl6rk ggphbty4 jb3vyjys qt6c0cv9 a8nywdso i1ao9s8h esuyzwwr f1sip0of jnigpg78" href="' + src + '" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="white" class="bi bi-cloud-arrow-down-fill" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 2a5.53 5.53 0 0 0-3.594 1.342c-.766.66-1.321 1.52-1.464 2.383C1.266 6.095 0 7.555 0 9.318 0 11.366 1.708 13 3.781 13h8.906C14.502 13 16 11.57 16 9.773c0-1.636-1.242-2.969-2.834-3.194C12.923 3.999 10.69 2 8 2zm2.354 6.854l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 1 1 .708-.708L7.5 9.293V5.5a.5.5 0 0 1 1 0v3.793l1.146-1.147a.5.5 0 0 1 .708.708z"/></svg></a>';
+                playerControls.appendChild(downloadDiv);
+                
+                resolve();
+            });
+        }
+    }, 3000);
 
     // Block ads
     setInterval(function() {
-        let storiesArray = document.body.querySelectorAll('div[data-pagelet^="FeedUnit_"]');
+        let articlesArray = Array.from(document.body.querySelectorAll('div[data-pagelet^="FeedUnit_"]'));
         
-        let tasks = Array.from(storiesArray).map(ProcessArticle);
+        let tasks = articlesArray.map(ProcessArticle);
         Promise.all(tasks);
     }, 2000);
     
