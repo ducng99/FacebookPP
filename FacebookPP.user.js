@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Facebook++
 // @namespace    maxhyt.fbpp
-// @version      3.1.0
+// @version      3.1.1
 // @description  download vid & block ads
 // @author       Maxhyt
 // @match        https://www.facebook.com/*
@@ -14,7 +14,7 @@
     
     // Download video
     setTimeout(function() {
-        if (window.location.href.indexOf("watch") !== -1)
+        if (RegExp(/(\/groups\/(\w|\.)+\/permalink\/\d+)|(\/watch\/\?v=)/).test(window.location.href))
         {
             new Promise(resolve => {
                 let scripts = document.querySelectorAll('script');
@@ -29,8 +29,21 @@
                     {
                         foundScript = true;
 
-                        let src_end_pos = scripts[i].innerText.indexOf('","spherical', HD_src_pos + 1);
+                        let src_end_pos = scripts[i].innerText.indexOf('","', HD_src_pos + 1);
                         src = scripts[i].innerText.substring(HD_src_pos + 'playable_url_quality_hd":"'.length, src_end_pos).replaceAll("\\", "");
+                    }
+                    else
+                    {
+                        let SD_src_pos = scripts[i].innerText.indexOf('playable_url');
+                        
+                        if (SD_src_pos !== -1)
+                        {
+                            foundScript = true;
+                            
+                            let src_end_pos = scripts[i].innerText.indexOf('","', SD_src_pos + 1);
+                            
+                            src = scripts[i].innerText.substring(SD_src_pos + 'playable_url":"'.length, src_end_pos).replaceAll("\\", "");
+                        }
                     }
                 }
 
