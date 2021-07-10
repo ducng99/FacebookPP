@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Facebook++
 // @namespace    maxhyt.fbpp
-// @version      3.1.1
+// @version      3.1.2
 // @description  download vid & block ads
 // @author       Maxhyt
 // @match        https://www.facebook.com/*
@@ -14,7 +14,7 @@
     
     // Download video
     setTimeout(function() {
-        if (RegExp(/(\/groups\/(\w|\.)+\/permalink\/\d+)|(\/watch\/\?v=)/).test(window.location.href))
+        if (/(\/groups\/(\w|\.)+\/(permalink|posts)\/\d+)|(\/watch\/\?v=)/.test(window.location.href))
         {
             new Promise(resolve => {
                 let scripts = document.querySelectorAll('script');
