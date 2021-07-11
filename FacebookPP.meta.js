@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Facebook++
 // @namespace    maxhyt.fbpp
-// @version      3.1.2
+// @version      3.1.3
 // @description  download vid & block ads
 // @author       Maxhyt
 // @updateURL    https://ducng99.github.io/FacebookPP/FacebookPP.meta.js
