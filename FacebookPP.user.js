@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Facebook++
 // @namespace    maxhyt.fbpp
-// @version      3.1.2
+// @version      3.1.3
 // @description  download vid & block ads
 // @author       Maxhyt
 // @match        https://www.facebook.com/*
@@ -23,7 +23,7 @@
 
                 for (let i = 0; i < scripts.length && !foundScript; i++)
                 {
-                    let HD_src_pos = scripts[i].innerText.indexOf('playable_url_quality_hd');
+                    let HD_src_pos = scripts[i].innerText.indexOf('playable_url_quality_hd":"https');
 
                     if (HD_src_pos !== -1)
                     {
@@ -34,7 +34,7 @@
                     }
                     else
                     {
-                        let SD_src_pos = scripts[i].innerText.indexOf('playable_url');
+                        let SD_src_pos = scripts[i].innerText.indexOf('playable_url":"https');
                         
                         if (SD_src_pos !== -1)
                         {
