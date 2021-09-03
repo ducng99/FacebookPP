@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Facebook++
 // @namespace    maxhyt.fbpp
-// @version      3.2.2
+// @version      3.3.0
 // @description  download vid & block ads
 // @author       Maxhyt
 // @match        https://www.facebook.com/*
@@ -75,9 +75,9 @@
 
     // Block ads
     setInterval(function() {
-        let articlesArray = Array.from(document.body.querySelectorAll('div[data-pagelet^="FeedUnit_"]'));
+        const articlesArray = Array.from(document.body.querySelectorAll('div[data-pagelet^="FeedUnit_"]'));
         
-        let tasks = articlesArray.map(ProcessArticle);
+        const tasks = articlesArray.map(ProcessArticle);
         Promise.all(tasks);
     }, 2000);
     
@@ -85,25 +85,14 @@
     {
         return new Promise(resolve => {
             article.setAttribute("data-pagelet", "fbpp_" + article.getAttribute("data-pagelet"));
+            const sponsorLettersDOM = [...article.querySelectorAll('.b6zbclly.myohyog2.l9j0dhe7.aenfhxwr.l94mrbxd.ihxqhq3m.nc684nl6.t5a262vz.sdhka5h4')];
+            sponsorLettersDOM.shift();
+            let sponsorText = 'S' + sponsorLettersDOM.filter(d => !d.getAttribute('style')).map(d => d.textContent).join('');
+            console.log(sponsorText);
             
-            let sponsoredLabel = article.querySelector("a[aria-label='Sponsored']");
-            
-            if (sponsoredLabel != null && sponsoredLabel.children.length > 0)
-            {
+            if (sponsorText === 'Sponsored') {
                 article.remove();
-
                 resolve(true);
-            }
-            else
-            {
-                let specialSponsor = article.querySelector("div.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.gmql0nx0.gpro0wi8.b1v8xokw");
-
-                if (specialSponsor != null)
-                {
-                    article.remove();
-            
-                    resolve(true);
-                }
             }
             
             resolve(false);
