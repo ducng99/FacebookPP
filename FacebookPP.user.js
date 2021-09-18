@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Facebook++
 // @namespace    maxhyt.fbpp
-// @version      3.3.2
+// @version      3.3.3
 // @description  download vid & block ads
 // @author       Maxhyt
 // @match        https://www.facebook.com/*
@@ -85,7 +85,8 @@
             article.setAttribute("data-pagelet", "fbpp_" + article.getAttribute("data-pagelet"));
             
             const sponsorLettersDOM = [...article.querySelectorAll('.b6zbclly.myohyog2.l9j0dhe7.aenfhxwr.l94mrbxd.ihxqhq3m.nc684nl6.t5a262vz.sdhka5h4.undefined')].map(d => d.textContent);
-            const sponsorText = sponsorLettersDOM.join('');
+            sponsorLettersDOM.shift();
+            const sponsorText = 'S' + sponsorLettersDOM.join('');
             
             if (sponsorText.includes('Sponsored')) {
                 article.remove();
