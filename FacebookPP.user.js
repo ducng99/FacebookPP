@@ -5,8 +5,6 @@
 // @description  download vid & block ads
 // @author       Maxhyt
 // @match        https://www.facebook.com/*
-// @updateURL    https://ducng99.github.io/FacebookPP/FacebookPP.meta.js
-// @downloadURL  https://ducng99.github.io/FacebookPP/FacebookPP.user.js
 // @run-at       document-idle
 // ==/UserScript==
 
