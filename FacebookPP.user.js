@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Facebook++
 // @namespace    maxhyt.fbpp
-// @version      3.3.7
+// @version      3.4.0
 // @description  download vid & block ads
 // @author       Maxhyt
 // @match        https://www.facebook.com/*
@@ -72,28 +72,30 @@
     }
 
     // Block ads
+    const ArticlesQueue = [];
+    
     setInterval(function() {
-        const articlesArray = Array.from(document.body.querySelectorAll('div[data-pagelet^="FeedUnit_"]'));
+        const articlesArray = [...document.body.querySelectorAll('div[data-pagelet^="FeedUnit_"]')];
         
-        const tasks = articlesArray.map(ProcessArticle);
-        Promise.all(tasks);
+        articlesArray.forEach(article => {
+            article.setAttribute("data-pagelet", "fbpp_" + article.getAttribute("data-pagelet"));
+            ArticlesQueue.push(article);
+        });
     }, 2000);
     
-    function ProcessArticle(article)
-    {
-        return new Promise(resolve => {
-            article.setAttribute("data-pagelet", "fbpp_" + article.getAttribute("data-pagelet"));
-            
+    setInterval(ProcessArticle, 500);
+    
+    function ProcessArticle() {
+        const article = ArticlesQueue.shift();
+        
+        if (article) {
             const sponsorLettersDOM = [...article.querySelectorAll('span.t5a262vz.nc684nl6.ihxqhq3m.l94mrbxd.aenfhxwr.l9j0dhe7.sdhka5h4 > span')].filter(d => !d.classList.contains('gdGs') && !d.classList.contains('tw7X6Rl')).map(d => d.textContent);
-            sponsorLettersDOM.shift();
-            const sponsorText = 'S' + sponsorLettersDOM.join('');
-            
+            //sponsorLettersDOM.shift();
+            const sponsorText = /*'S' + */sponsorLettersDOM.join('');
+
             if (sponsorText.includes('Sponsored')) {
                 article.remove();
-                resolve(true);
             }
-            
-            resolve(false);
-        });
+        }
     }
 })();
