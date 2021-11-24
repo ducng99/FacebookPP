@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Facebook++
 // @namespace    maxhyt.fbpp
-// @version      3.3.6
+// @version      3.3.7
 // @description  download vid & block ads
 // @author       Maxhyt
 // @match        https://www.facebook.com/*
@@ -84,7 +84,7 @@
         return new Promise(resolve => {
             article.setAttribute("data-pagelet", "fbpp_" + article.getAttribute("data-pagelet"));
             
-            const sponsorLettersDOM = [...article.querySelectorAll('span.t5a262vz.nc684nl6.ihxqhq3m.l94mrbxd.aenfhxwr.l9j0dhe7.sdhka5h4 > span')].filter(d => !d.classList.contains('hdGt') && !d.classList.contains('sw7X6Rk')).map(d => d.textContent);
+            const sponsorLettersDOM = [...article.querySelectorAll('span.t5a262vz.nc684nl6.ihxqhq3m.l94mrbxd.aenfhxwr.l9j0dhe7.sdhka5h4 > span')].filter(d => !d.classList.contains('gdGs') && !d.classList.contains('tw7X6Rl')).map(d => d.textContent);
             sponsorLettersDOM.shift();
             const sponsorText = 'S' + sponsorLettersDOM.join('');
             
