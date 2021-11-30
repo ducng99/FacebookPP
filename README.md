@@ -1,7 +1,7 @@
 # FacebookPP
 
 ## Features
-- Hide sponsors posts 
+- Hide sponsored posts 
 - Download video (only works when url has https://www.facebook.com/watch/?v=)
 
 ## Installation
