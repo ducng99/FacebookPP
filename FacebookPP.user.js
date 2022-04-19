@@ -1,11 +1,10 @@
 // ==UserScript==
 // @name         Facebook++
 // @namespace    maxhyt.fbpp
-// @version      3.4.3
+// @version      3.5.0
 // @description  download vid & block ads
 // @author       Maxhyt
 // @match        https://www.facebook.com/*
-// @run-at       document-idle
 // ==/UserScript==
 
 (function() {
@@ -71,8 +70,8 @@
             alert('Link not found!');
     }
 
-    // Block ads    
-    setInterval(ProcessArticle, 1000);
+    // Block ads
+    setInterval(ProcessArticle, 500);
     
     function ProcessArticle() {
         const article = document.body.querySelector('div[data-pagelet^="FeedUnit_"]');
@@ -82,12 +81,28 @@
             
             const sponsorLettersDOM = [...article.querySelectorAll('span.nc684nl6.l94mrbxd.l9j0dhe7.sdhka5h4 > span')].filter(d => {
                 const styles = window.getComputedStyle(d, null);
-                return styles.top === "0px" && styles.display !== "none";
+                return styles.top === "0px" && styles.display === "block";
             }).map(d => d.textContent);
             
-            const sponsorText = 'S' + sponsorLettersDOM.join('');
+            const sponsorTextToCheck = ['S', 'p', 'o', 'n', 's', 'e', 'r', 'e', 'd'];
+            let isSponsored = false;
+            
+            sponsorTextToCheck.forEach((c, i) => {
+                let charIndex = sponsorLettersDOM.indexOf(c);
+                
+                if (charIndex > -1) {
+                    sponsorLettersDOM.splice(charIndex, 1);
+                }
+                else {
+                    return;
+                }
+                
+                if (i == sponsorTextToCheck.length - 1) {
+                    isSponsored = true;
+                }
+            });
 
-            if (sponsorText.includes('Sponsored')) {
+            if (isSponsored) {
                 article.remove();
             }
         }
