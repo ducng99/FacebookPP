@@ -1,19 +1,19 @@
 // ==UserScript==
 // @name         Facebook++
 // @namespace    maxhyt.fbpp
-// @version      3.6.0
+// @version      3.6.1
 // @description  download vid & block ads
 // @author       Maxhyt
 // @match        https://www.facebook.com/*
 // @run-at       document-start
 // ==/UserScript==
 
-(function() {
+(function () {
     'use strict';
-    
+
     const config = { childList: true, subtree: true };
 
-    const callback = function(mutationsList, observer) {
+    const callback = function (mutationsList, observer) {
         mutationsList.forEach(mutation => {
             if (mutation.type === 'childList') {
                 mutation.addedNodes.forEach(node => {
@@ -22,21 +22,19 @@
             }
         });
     };
-    
+
     const observer = new MutationObserver(callback);
     observer.observe(document.documentElement, config);
-    
+
     window.addEventListener('load', () => {
         // Download video
-        if (/(\/(groups\/)?(\w|\.)+\/(permalink|posts)\/\d+)|(\/watch\/\?v=)/.test(window.location.href))
-        {
+        if (/(\/(groups\/)?(\w|\.)+\/(permalink|posts)\/\d+)|(\/watch\/\?v=)/.test(window.location.href)) {
             let playerControls;
 
             let PlayerControlsInt = setInterval(() => {
                 playerControls = document.body.querySelector('div.bp9cbjyn.i09qtzwb.jeutjz8y.j83agx80.btwxx1t3.pmk7jnqg.dpja2al7.pnx7fd3z.e4zzj2sf.k4urcfbm.tghn160j');
 
-                if (playerControls)
-                {
+                if (playerControls) {
                     clearInterval(PlayerControlsInt);
 
                     let downloadDiv = document.createElement('div');
@@ -50,65 +48,59 @@
             }, 1000);
         }
     });
-    
-    function DownloadVideo()
-    {
+
+    function DownloadVideo() {
         let scripts = document.querySelectorAll('script');
         let foundScript = false;
         let src = null;
 
-        for (let i = scripts.length - 1; i >= 0 && !foundScript; i--)
-        {
+        for (let i = scripts.length - 1; i >= 0 && !foundScript; i--) {
             let SD_src_pos = scripts[i].innerText.indexOf('playable_url":"https');
 
-            if (SD_src_pos !== -1)
-            {
+            if (SD_src_pos !== -1) {
                 foundScript = true;
 
                 let src_end_pos = scripts[i].innerText.indexOf('","', SD_src_pos + 1);
 
                 src = scripts[i].innerText.substring(SD_src_pos + 'playable_url":"'.length, src_end_pos).replaceAll("\\", "");
-                
-                if (scripts[i].innerText.substring(src_end_pos + '","playable_url_quality_hd":'.length, src_end_pos + '","playable_url_quality_hd":'.length + 4) !== "null")
-                {
+
+                if (scripts[i].innerText.substring(src_end_pos + '","playable_url_quality_hd":'.length, src_end_pos + '","playable_url_quality_hd":'.length + 4) !== "null") {
                     let HD_src_pos = src_end_pos + '","'.length;
 
-                    if (HD_src_pos !== -1)
-                    {
+                    if (HD_src_pos !== -1) {
                         src_end_pos = scripts[i].innerText.indexOf('","', HD_src_pos + 1);
                         src = scripts[i].innerText.substring(HD_src_pos + 'playable_url_quality_hd":"'.length, src_end_pos).replaceAll("\\", "");
                     }
                 }
             }
         }
-        
+
         if (src)
             window.open(src, "_blank");
         else
             alert('Link not found!');
     }
-    
-    function RemoveSponsoredArticle(article) {        
-        if (article.getAttribute("data-pagelet").startsWith("FeedUnit_")) {
-            
-            const sponsorLettersDOM = [...article.querySelectorAll('span.nc684nl6.l94mrbxd.l9j0dhe7.sdhka5h4 > span')].filter(d => {
+
+    function RemoveSponsoredArticle(article) {
+        if (article.getAttribute && article.getAttribute("class") == "b6ax4al1") {
+            const sponsorLettersDOM = [...article.querySelectorAll('span.rrjlc0n4.rse6dlih.no6h3tfh.jwegzro5.t9luyltp.om3e55n1.szd3m19j.bl8g0zk3 > span')].filter(d => {
                 const styles = window.getComputedStyle(d, null);
-                return styles.top === "0px" && styles.display === "block";
+                return styles.top === "0px" && styles.display !== "none";
             }).map(d => d.textContent);
-            
+
             const sponsorTextToCheck = ['S', 'p', 'o', 'n', 's', 'e', 'r', 'e', 'd'];
             let isSponsored = false;
-            
+
             sponsorTextToCheck.forEach((c, i) => {
                 let charIndex = sponsorLettersDOM.indexOf(c);
-                
+
                 if (charIndex > -1) {
                     sponsorLettersDOM.splice(charIndex, 1);
                 }
                 else {
                     return;
                 }
-                
+
                 if (i == sponsorTextToCheck.length - 1) {
                     isSponsored = true;
                 }
