@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Facebook++
 // @namespace    maxhyt.fbpp
-// @version      3.6.1
+// @version      3.6.2
 // @description  download vid & block ads
 // @author       Maxhyt
 // @match        https://www.facebook.com/*
@@ -81,33 +81,23 @@
             alert('Link not found!');
     }
 
+    /**
+     * @param {HTMLElement} article 
+     */
     function RemoveSponsoredArticle(article) {
-        if (article.getAttribute && article.getAttribute("class") == "b6ax4al1") {
-            const sponsorLettersDOM = [...article.querySelectorAll('span.rrjlc0n4.rse6dlih.no6h3tfh.jwegzro5.t9luyltp.om3e55n1.szd3m19j.bl8g0zk3 > span')].filter(d => {
-                const styles = window.getComputedStyle(d, null);
-                return styles.top === "0px" && styles.display !== "none";
-            }).map(d => d.textContent);
+        let isSponsored = false;
 
-            const sponsorTextToCheck = ['S', 'p', 'o', 'n', 's', 'e', 'r', 'e', 'd'];
-            let isSponsored = false;
+        if (article.tagName === "DIV" && article.classList && article.classList.contains("x1lliihq") && article.classList.length === 1) {
+            const sponsoredTextElement = article.querySelector("div.x9f619.xt0psk2.xjb2p0i.x1qlqyl8.x15bjb6t use");
 
-            sponsorTextToCheck.forEach((c, i) => {
-                let charIndex = sponsorLettersDOM.indexOf(c);
+            if (sponsoredTextElement) {
+                const shadowID = sponsoredTextElement.getAttribute("xlink:href").substring(1);
 
-                if (charIndex > -1) {
-                    sponsorLettersDOM.splice(charIndex, 1);
+                const sponsoredTextRealElement = document.getElementById(shadowID);
+
+                if (sponsoredTextRealElement && sponsoredTextRealElement.textContent === "Sponsored") {
+                    article.remove();
                 }
-                else {
-                    return;
-                }
-
-                if (i == sponsorTextToCheck.length - 1) {
-                    isSponsored = true;
-                }
-            });
-
-            if (isSponsored) {
-                article.remove();
             }
         }
     }
